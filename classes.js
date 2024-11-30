@@ -8,12 +8,14 @@ export class Boundary {
     }
 
     draw() {
-        this.context.fillStyle = 'rgba(255, 0, 0, 0.0)';
-        this.context.fillRect(this.position.x, this.position.y, this.width, this.height);
-
-        // Debug vykreslení hranic
-        this.context.strokeStyle = 'rgba(255, 0, 0, 0.0)';
-        this.context.strokeRect(this.position.x, this.position.y, this.width, this.height);
+        if (this.type === "abilityCrate") {
+            const crateImage = new Image();
+            crateImage.src = '/images/crate.png';
+            this.context.drawImage(crateImage, this.position.x, this.position.y, this.width, this.height);
+        } else {
+            this.context.fillStyle = "rgba(255, 0, 0, 0.0)";
+            this.context.fillRect(this.position.x, this.position.y, this.width, this.height);
+        }
     }
 }
 

@@ -1,25 +1,27 @@
-// healthBar.js
-export function drawHealthBar(player, c) {
+export function drawHealthBar(player, context) {
+    if (!player.id) {
+        console.warn('Player ID is not defined, skipping health bar drawing');
+        return;
+    }
+
     const barWidth = 80; // Šířka health baru
     const barHeight = 10; // Výška health baru
-    const barX = player.position.x + player.width / 2 - barWidth / 2; // Pozice X
-    const barY = player.position.y - 20; // Pozice Y nad hráčem
+    const barX = player.position.x + player.width / 2 - barWidth / 2;
+    const barY = player.position.y - 20;
 
-    // Vypočítáme šířku vyplněné části podle zdraví
-    const healthPercentage = player.health / 100;
+    //console.log(`Drawing health bar for Player ${player.id}: Health ${player.health}`);
+
+    const health = Math.max(0, player.health);
+    const healthPercentage = health / 100;
     const filledWidth = barWidth * healthPercentage;
 
-    // Vykreslení pozadí health baru (červená)
-    c.fillStyle = 'red';
-    c.fillRect(barX, barY, barWidth, barHeight);
+    context.fillStyle = 'red';
+    context.fillRect(barX, barY, barWidth, barHeight);
 
-    // Vykreslení vyplněné části (zelená)
-    c.fillStyle = 'green';
-    c.fillRect(barX, barY, filledWidth, barHeight);
+    context.fillStyle = 'green';
+    context.fillRect(barX, barY, filledWidth, barHeight);
 
-    // Rámeček health baru
-    c.strokeStyle = 'black';
-    c.lineWidth = 1;
-    c.strokeRect(barX, barY, barWidth, barHeight);
+    context.strokeStyle = 'black';
+    context.lineWidth = 1;
+    context.strokeRect(barX, barY, barWidth, barHeight);
 }
-

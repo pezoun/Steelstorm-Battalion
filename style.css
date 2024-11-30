@@ -1,6 +1,7 @@
 body{
     background: black;
     cursor: cell;
+    overflow: hidden;
 }
 canvas{
     display: block;

@@ -1,8 +1,13 @@
-export function handlePlayerMovement(player, keys, speed) {
-    if(player.isDestroyed) return;
+import { player2, sendMovementData } from "./main.js";
+import { checkTankCollision } from "./collisions.js";
+
+export function handlePlayerMovement(player, keys) {
+    if (player.isDestroyed) return;
+
     let newPositionX = player.position.x;
     let newPositionY = player.position.y;
     player.moving = false;
+    let speed = player.speed || 1;
 
     // Připravíme pole pro zaznamenání stisknutých směrových kláves
     const pressedKeys = [];
@@ -64,8 +69,9 @@ export function handlePlayerMovement(player, keys, speed) {
             player.moving = false;
             break;
     }
-     // Kontrola kolizí s hranicemi mapy
-     if (newPositionX < 0) {
+
+    // Kontrola kolizí s hranicemi mapy
+    if (newPositionX < 0) {
         newPositionX = 0;
     }
     if (newPositionX + player.width > canvas.width) {
@@ -77,5 +83,31 @@ export function handlePlayerMovement(player, keys, speed) {
     if (newPositionY + player.height > canvas.height) {
         newPositionY = canvas.height - player.height;
     }
+
+    const futurePosition = {
+        ...player,
+        position: { x: newPositionX, y: newPositionY },
+    };
+
+    // Kontrola kolizí s druhým hráčem
+    if (checkTankCollision(futurePosition, player2)) {
+        console.log("Collision with Player 2 detected!");
+        return { newPositionX: player.position.x, newPositionY: player.position.y };
+    }
+
+    // Pokud došlo ke změně pozice nebo rotace, odešleme data pomocí `sendMovementData`
+    if (
+        newPositionX !== player.position.x ||
+        newPositionY !== player.position.y ||
+        player.rotation !== futurePosition.rotation
+    ) {
+        sendMovementData({
+            x: newPositionX,
+            y: newPositionY,
+            rotation: player.rotation,
+        });
+    }
+
+    // Aktualizujeme pozici hráče
     return { newPositionX, newPositionY };
 }
